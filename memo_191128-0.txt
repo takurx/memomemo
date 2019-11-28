@@ -1,0 +1,199 @@
+# Ubuntu 18.04にgoogle driveをインストールできた。One driveはうまくいってない。なぜ？dropboxもインストールできた。
+
+# 概要
+- google driveについては、Ref 2.のsettings > online accountsから設定したほうが簡単。
+- dropboxもコマンド一つで簡単だった。
+- OneDriveはわからん。。。
+
+
+##　詳細
+
+- Ref 1. http://hirotaka-hachiya.hatenablog.com/entry/2019/01/11/145135
+これ通り進めたら、google driveはできた。
+```
+sudo add-apt-repository ppa:alessandro-strada/ppa
+sudo apt-get update
+sudo apt-get install google-drive-ocamlfuse
+google-drive-ocamlfuse
+```
+
+ブラウザに認証画面がでたので、メールアドレスとパスワードを入力した。
+```
+mocha@hoto:~$ google-drive-ocamlfuse 
+Access token retrieved correctly.
+```
+
+```
+mkdir GoogleDrive
+google-drive-ocamlfuse GoogleDrive
+```
+
+- Ref 2. https://karaas.hatenablog.jp/entry/2018/11/29/141733
+google driveについてはSettings > Online Accountsで設定したほうが簡単だった。
+
+OneDriveはこの方法がで進めたが、まだうまくいってない。なぜ？
+
+```
+sudo apt install libcurl4-openssl-dev libsqlite3-dev
+sudo apt install onedrive
+onedrive
+```
+
+```
+mocha@hoto:~$ onedrive
+Authorize this app visiting:
+
+https://login.microsoftonline.com/common/oauth2/v2.0/authorize?aaaaa
+
+Enter the response uri: https://login.microsoftonline.com/common/oauth2/aaaaaaa
+HTTP request returned status code 403 (Forbidden)
+{
+    "error": {
+        "code": "notAllowed",
+        "innerError": {
+            "date": "2019-11-27T09:32:52",
+            "request-id": "23727847-4323-4d7e-84a7-70ec8a6220c8"
+        },
+        "message": "You do not have access to create this personal site or you do not have a valid license"
+    }
+}
+HTTP request returned status code 403 (Forbidden)
+{
+    "error": {
+        "code": "notAllowed",
+        "innerError": {
+            "date": "2019-11-27T09:32:53",
+            "request-id": "d5b38fd7-bee0-4d6c-bdf9-289f50250229"
+        },
+        "message": "You do not have access to create this personal site or you do not have a valid license"
+    }
+}
+sync.SyncException@src/sync.d(182): HTTP request returned status code 403 (Forbidden)
+{
+    "error": {
+        "code": "notAllowed",
+        "innerError": {
+            "date": "2019-11-27T09:32:53",
+            "request-id": "0ef786fc-ba9d-48d5-93e3-f7762f1369c6"
+        },
+        "message": "You do not have access to create this personal site or you do not have a valid license"
+    }
+}
+----------------
+0x563d134e491a ???
+	???:0
+0x563d134da002 ???
+	???:0
+0x563d134d9a72 ???
+	???:0
+0x563d1362d8be ???
+	???:0
+0x563d1362da2e ???
+	???:0
+0x563d1362ddea ???
+	???:0
+0x563d1362da2e ???
+	???:0
+0x563d1362dbc0 ???
+	???:0
+0x563d134d8ea3 ???
+	???:0
+0x7fd69ebedb96 __libc_start_main
+	???:0
+0x563d134d0c99 ???
+	???:0
+0xffffffffffffffff ???
+	???:0
+onedrive.OneDriveException@src/onedrive.d(403): HTTP request returned status code 403 (Forbidden)
+{
+    "error": {
+        "code": "notAllowed",
+        "innerError": {
+            "date": "2019-11-27T09:32:53",
+            "request-id": "0ef786fc-ba9d-48d5-93e3-f7762f1369c6"
+        },
+        "message": "You do not have access to create this personal site or you do not have a valid license"
+    }
+}
+----------------
+0x563d134dea9c ???
+	???:0
+0x563d134ddd03 ???
+	???:0
+0x563d134dc1de ???
+	???:0
+0x563d134e4260 ???
+	???:0
+0x563d134da002 ???
+	???:0
+0x563d134d9a72 ???
+	???:0
+0x563d1362d8be ???
+	???:0
+0x563d1362da2e ???
+	???:0
+0x563d1362ddea ???
+	???:0
+0x563d1362da2e ???
+	???:0
+0x563d1362dbc0 ???
+	???:0
+0x563d134d8ea3 ???
+	???:0
+0x7fd69ebedb96 __libc_start_main
+	???:0
+0x563d134d0c99 ???
+	???:0
+0xffffffffffffffff ???
+	???:0
+Segmentation fault (core dumped)
+```
+
+他の方法をやってみたが、まだうまくいっていない。
+- Ref 3. https://qiita.com/afj/items/61ca815aa37d87bd391d
+```
+sudo apt-get install libcurl4-openssl-dev libsqlite3-dev gdebi
+wget http://downloads.dlang.org/releases/2.x/2.073.2/dmd_2.073.2-0_amd64.deb
+sudo gdebi dmd_2.073.2-0_amd64.deb
+```
+
+```
+mocha@hoto:~$ cd Github/
+mocha@hoto:~/Github$ git clone git@github.com:skilion/onedrive.git
+mocha@hoto:~/Github$ cd onedrive/
+mocha@hoto:~/Github/onedrive$ make
+echo v1.1.3 >version
+dmd -g -ofonedrive -O -L-lcurl -L-lsqlite3 -L-ldl -J. src/config.d src/itemdb.d src/log.d src/main.d src/monitor.d src/onedrive.d src/qxor.d src/selective.d src/sqlite.d src/sync.d src/upload.d src/util.d
+/usr/bin/ld: cannot find -lcurl
+collect2: error: ld returned 1 exit status
+Error: linker exited with status 1
+Makefile:29: recipe for target 'onedrive' failed
+make: *** [onedrive] Error 1
+```
+
+- Ref 4. http://please-sleep.cou929.nu/20080718.html
+問題なさそうな。
+```
+mocha@hoto:~/Github/onedrive$ ldconfig -p | grep libcurl
+	libcurl.so.4 (libc6,x86-64) => /usr/lib/x86_64-linux-gnu/libcurl.so.4
+	libcurl-gnutls.so.4 (libc6,x86-64) => /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4
+mocha@hoto:~/Github/onedrive$ ls -l /usr/lib/x86_64-linux-gnu/libcurl*
+lrwxrwxrwx 1 root root     19  9月  6 14:27 /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.3 -> libcurl-gnutls.so.4
+lrwxrwxrwx 1 root root     23  9月  6 14:27 /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4 -> libcurl-gnutls.so.4.5.0
+-rw-r--r-- 1 root root 510408  9月  6 14:27 /usr/lib/x86_64-linux-gnu/libcurl-gnutls.so.4.5.0
+lrwxrwxrwx 1 root root     16  3月  5  2018 /usr/lib/x86_64-linux-gnu/libcurl.so.4 -> libcurl.so.4.5.0
+-rw-r--r-- 1 root root 518600  3月  5  2018 /usr/lib/x86_64-linux-gnu/libcurl.so.4.5.0
+```
+
+curlを再インストールしたり、D言語をインストールしたがなんかうまくいかない。どうしたら。。。
+
+これか？Ref 3.の
+https://github.com/abraunegg/onedrive
+
+- Ref 5. https://linuxfan.info/dropbox-on-ubuntu
+
+dropboxは簡単だった。
+```
+sudo apt install -y nautilus-dropbox
+してdropboxのプログラムを起動して認証
+```

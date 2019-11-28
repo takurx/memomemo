@@ -1,0 +1,64 @@
+# Ubuntu 18.04にEagle 9.5.1をインストールしたら解像度がおかしかったけど直ったぜ
+
+Ref 1. https://qiita.com/Daichi_Tagami/items/a00a989af705351ecdba
+通りに進めていく。一部、補完しておく。
+
+###　Ubuntuのアップデート
+```
+$ sudo apt update
+$ sudo apt upgrade
+````
+（"install "不要）
+
+###　tar.gzの解凍
+```
+$ tar -zxvf ./Autodesk_EAGLE_9.5.1_English_Linux_64bit.tar.gz
+```
+Ref 2. https://qiita.com/supersaiakujin/items/c6b54e9add21d375161f
+
+
+
+しかし、解像度がおかしい。
+
+Ref 3. https://forums.autodesk.com/t5/eagle-forum/wrong-resolution-on-linux-ubuntu-after-update/td-p/8122102
+```
+I've found the solution
+https://ubuntuforums.org/showthread.php?t=2390362
+```
+
+Ref 4. https://ubuntuforums.org/showthread.php?t=2390362
+```
+ 1. open a terminal and type:
+sudo -H /bin/bash
+
+2. Type your password.
+
+3. navigate to the etc/profile.d folder by typing:
+cd /etc/profile.d
+
+4. Open the text editor and type the following:
+export QT_AUTO_SCREEN_SCALE_FACTOR=0
+
+Now save the file to the desktop as gnome-qt.sh
+Close the text editor.
+
+5. Back in the terminal type the following, where USER is your own user name. Press enter when done.
+
+sudo cp '/home/USER/Desktop/gnome-qt.sh' /etc/profile.d
+You can even drag the file into the terminal after sudo cp .
+
+What this will do is copy your file from the desktop into the profile.d folder.
+
+6. Now you can close the terminal. Delete the desktop file if you want.
+
+7. Restart the computer and VLC should look normal. 
+```
+
+Options>User interface...
+で
+### Display
+- Enable High DPI Scaling
+- Enable Auto Screen Scale Factor
+のチェックを外す
+
+やったぜ。
